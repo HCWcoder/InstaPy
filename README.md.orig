@@ -97,12 +97,14 @@ session.set_sleep_reduce(95)
 #in this case: 100 dog-posts and 100 cat-posts
 session.like_by_tags(['#dog', 'cat'], amount=100)
 
+<<<<<<< HEAD
 #likes 50 photos using 2 tags from total tags
 session.like_by_tags(['dog', 'cat', 'dogs', 'cats'], amount=50, sort=2)
-
+=======
 #likes specified amount of posts for each location in the array
 #in this case: 100 posts geotagged at the chrysler building and 100 posts geotagged at the salton sea
 session.like_by_locations(['26429/chrysler-building/', '224442573/salton-sea/'], amount=100)
+>>>>>>> 6eedd0a9a985bf63be8cf6a7cd007896399a60ea
 
 #gets tags from image passed as instagram-url and likes specified amount of images for each tag
 session.like_from_image(url='www.instagram.com/p/BSrfITEFUAM/', amount=100)

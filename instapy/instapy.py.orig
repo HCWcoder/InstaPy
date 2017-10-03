@@ -4,7 +4,10 @@ from os import environ
 
 from random import randint
 from random import sample
+<<<<<<< HEAD
+=======
 from math import ceil
+>>>>>>> 6eedd0a9a985bf63be8cf6a7cd007896399a60ea
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -318,6 +321,7 @@ class InstaPy:
             return self
 
         followed = 0
+<<<<<<< HEAD
       else:
         print('---> {} has already been followed more than {} times'.format(acc_to_follow,
               str(self.follow_times)))
@@ -365,6 +369,7 @@ class InstaPy:
         self.logFile.write('Too few images, aborting\n')
 
         self.aborting = True
+=======
 
         for acc_to_follow in followlist:
             if self.follow_restrict.get(acc_to_follow, 0) < self.follow_times:
