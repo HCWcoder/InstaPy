@@ -46,7 +46,7 @@ session.set_comments(['Cool!', 'Awesome!', 'Nice!'])
 session.set_dont_include(['friend1', 'friend2', 'friend3'])
 session.set_dont_like(['food', 'girl', 'hot'])
 session.set_ignore_if_contains(['pizza'])
-session.like_by_tags(['dog', '#cat'], amount=100)\
+session.like_by_tags(['dog', '#cat'], amount=100)
 
 session.end()
 ```
