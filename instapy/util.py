@@ -20,6 +20,7 @@ def check_activity():
         'server_calls': ''
     }
 
+    # read csv file
     try:
         with open('./logs/activity.csv', 'r') as activity:
             reader = csv.DictReader(activity)
