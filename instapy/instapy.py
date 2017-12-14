@@ -752,7 +752,7 @@ class InstaPy:
         for index, username in enumerate(usernames):
             self.logger.info(
                 'Username [{}/{}]'.format(index + 1, len(usernames)))
-            self.logger.info('--> {}'.format(username.encode('utf-8')))
+            self.logger.info('--> %s', username)
             following = random.randint(0, 100) <= self.follow_percentage
 
             valid_user = validate_username(self.browser,
@@ -1072,7 +1072,7 @@ class InstaPy:
 
     def interact_user_followers(self, usernames, amount=10, randomize=False):
 
-        userToInteract = []
+        users_to_interact = []
         if not isinstance(usernames, list):
             usernames = [usernames]
         try:
@@ -1086,24 +1086,20 @@ class InstaPy:
                                                 self.follow_restrict,
                                                 randomize,
                                                 self.logger)
-                if isinstance(user, list):
-                    userToInteract += user
-        except (TypeError, RuntimeWarning) as err:
-            if isinstance(err, RuntimeWarning):
-                self.logger.warning(
-                    u'Warning: {} , stopping follow_users'.format(err))
-                return self
-            else:
-                self.logger.error('Sorry, an error occured: {}'.format(err))
-                self.aborting = True
-                return self
+                if len(user) != 0:
+                    users_to_interact += user
+        except:
+            self.logger.exception('message')
 
-        self.logger.info('--> Users: {} \n'.format(len(userToInteract)))
-        userToInteract = random.sample(
-            userToInteract,
-            int(ceil(self.user_interact_percentage * len(userToInteract) / 100)))
+        self.logger.info('--> Users: {} \n'.format(len(users_to_interact)))
+        # from all users at the list, collect the
+        # percentage from user_interact_percentage
+        users_to_interact = random.sample(
+            users_to_interact,
+            int(ceil(
+                self.user_interact_percentage * len(users_to_interact) / 100)))
 
-        self.like_by_users(userToInteract,
+        self.like_by_users(users_to_interact,
                            self.user_interact_amount,
                            self.user_interact_random,
                            self.user_interact_media)

@@ -590,30 +590,34 @@ def get_given_user_followers(browser,
 
     # get follow buttons. This approch will find the follow buttons and
     # ignore the Unfollow/Requested buttons.
-    follow_buttons = dialog.find_elements_by_xpath(
+    user_follow_buttons = dialog.find_elements_by_xpath(
         "//div/div/span/button[text()='Follow']")
-    person_list = []
+    user_list = []
 
-    if amount >= len(follow_buttons):
-        amount = len(follow_buttons)
-        logger.warning("{} -> Less users to follow than requested."
-                       .format(user_name))
+    if len(user_follow_buttons) < amount and len(user_follow_buttons) > 0:
+        logger.warning("%s -> Less users to interact than requested "
+                       "(%s followers to interact).",
+                       user_name, len(user_follow_buttons))
+    elif len(user_follow_buttons) == 0:
+        logger.warning("%s -> Has no users to interact", user_name)
+        # empty list
+        return []
 
-    finalBtnPerson = []
+    user_unfollow_buttons = []
     if randomize:
-        sample = random.sample(range(0, len(follow_buttons)), amount)
+        users_to_interact = random.sample(
+            range(0, len(user_follow_buttons)), amount)
 
-        for num in sample:
-            finalBtnPerson.append(follow_buttons[num])
+        for user in users_to_interact:
+            user_unfollow_buttons.append(user_follow_buttons[user])
     else:
-        finalBtnPerson = follow_buttons[0:amount]
-    for person in finalBtnPerson:
+        # collect requested amount to interact
+        user_follow_buttons = user_follow_buttons[0:amount]
+    for user in user_follow_buttons:
+            user_list.append(user.find_element_by_xpath(
+                "//div[@class='_2nunc']/a"))
 
-        if person and hasattr(person, 'text') and person.text:
-            person_list.append(person.find_element_by_xpath(
-                "../../../*").find_elements_by_tag_name("a")[1].text)
-
-    return person_list
+    return user_list
 
 
 def get_given_user_following(browser,
