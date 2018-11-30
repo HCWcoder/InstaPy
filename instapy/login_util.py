@@ -167,21 +167,16 @@ def login_user(browser,
             browser.add_cookie(cookie)
             cookie_loaded = True
     except (WebDriverException, OSError, IOError):
-        print("Cookie file not found, creating cookie...")
+        logger.warn("Cookie file not found, creating cookie...")
 
-    # include time.sleep(1) to prevent getting stuck on google.com
-    time.sleep(1)
-
-    web_address_navigator(browser, ig_homepage)
-    reload_webpage(browser)
-
-    # Changes instagram language to english, to ensure no errors ensue from
-    # having the site on a different language
-    # Might cause problems if the OS language is english
+    # changes instagram website language to english to use english xpaths
     if switch_language:
         language_element_ENG = browser.find_element_by_xpath(
           "//select[@class='hztqj']/option[text()='English']")
         click_element(browser, language_element_ENG)
+
+    web_address_navigator(browser, ig_homepage)
+    reload_webpage(browser)
 
     # cookie has been LOADED, so the user SHOULD be logged in
     # check if the user IS logged in
@@ -197,8 +192,8 @@ def login_user(browser,
     # if user is still not logged in, then there is an issue with the cookie
     # so go create a new cookie..
     if cookie_loaded:
-        print("Issue with cookie for user {}. Creating "
-              "new cookie...".format(username))
+        login.warn("Issue with cookie for user {}. Creating "
+                   "new cookie...".format(username))
 
     # Check if the first div is 'Create an Account' or 'Log In'
     login_elem = browser.find_element_by_xpath(

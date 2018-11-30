@@ -401,7 +401,7 @@ def unfollow(browser,
 
         # find dialog box
         dialog = browser.find_element_by_xpath(
-            "//div[text()='Following']/../../following-sibling::div")
+            "//div[text()='Following']/../../../..")
 
         sleep(3)
 
@@ -647,9 +647,11 @@ def get_users_through_dialog(browser,
     sc_rolled = 0
 
     # find dialog box
-    dialog_address = "//div[text()='Followers' or text()='Following']/../../following-sibling::div"
+    # stopped working here
+    # -----> we need to find the right dialog to scroll down
+    # dialog_address = "//button[text()='Followers' or text()='Following']"
+    # dialog_address = "//div[3]/div/div/div[2]" <--- maybe
     dialog = browser.find_element_by_xpath(dialog_address)
-
     # scroll to end of follower list to initiate first load which hides the suggestions
     scroll_to_bottom_of_followers_list(browser, dialog)
 

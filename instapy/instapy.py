@@ -388,11 +388,13 @@ class InstaPy:
         self.browser.implicitly_wait(self.page_delay)
 
         message = "Session started!"
-        highlight_print(self.username, message, "initialization", "info", self.logger)
-        print('')
+        highlight_print(self.username,
+                        message,
+                        "initialization",
+                        "info",
+                        self.logger)
 
         return self
-
 
 
     def set_selenium_remote_session(self, selenium_url='', selenium_driver=None):
