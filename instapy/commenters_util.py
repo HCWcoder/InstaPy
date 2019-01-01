@@ -80,7 +80,6 @@ def extract_post_info(browser):
                     user_commented = comm.find_element_by_tag_name(
                         'a').get_attribute("href").split('/')
                     user_commented_list.append(user_commented[3])
-
             except Exception:
                 print("cant get comments")
 
@@ -140,7 +139,6 @@ def extract_information(browser, username, daysold, max_pic):
                 if "/p/" in link:
                     links2.append(link)
                     links3.append(link)
-                last_link = link
             links2 = list(set(links2))
             # if after previous scroll, size of links2 didnt increase,
             # we should finish else we continue
@@ -219,9 +217,8 @@ def extract_information(browser, username, daysold, max_pic):
         print(err)
 
     links4 = remove_duplicates_preserving_order(links3)
-    post_infos = []
 
-    # PICTURES SCRAPPER ONE BY ONE
+    # pictures scrapper one by one
     # into user_commented_total_list go all username links who commented on
     # any post of this user
     counter = 1
@@ -238,8 +235,9 @@ def extract_information(browser, username, daysold, max_pic):
         try:
             web_address_navigator(browser, link)
             user_commented_list, pic_date_time = extract_post_info(browser)
-            user_commented_total_list = user_commented_total_list + \
-                                        user_commented_list
+            user_commented_total_list = (
+                '{}{}'.format(user_commented_total_list, user_commented_list)
+            )
 
             # stop if date older than daysago
             pastdate = datetime.now() - timedelta(days=daysold)
@@ -254,9 +252,9 @@ def extract_information(browser, username, daysold, max_pic):
                 break
             sleep(1)
         except NoSuchElementException:
-            print('- Could not get information from post: ' + link)
+            print('- Could not get information from post: {}'.format(link))
 
-    # PREPARE THE USER LIST TO EXPORT
+    # prepare the user list to export
     # sorts the list by frequencies, so users who comment the most are at
     # the top
     counter = collections.Counter(user_commented_total_list)
@@ -293,7 +291,6 @@ def users_liked(browser, photo_url, amount=100):
 
 
 def likers_from_photo(browser, amount=20):
-    user_liked_list = []
     liked_counter_button = "//div/article/div[2]/section[2]/div/div/a"
 
     try:
@@ -413,7 +410,7 @@ def get_photo_urls_from_profile(browser, username, links_to_return_amount=1,
         if ("/p/" in photo_url):
             links.append(photo_url)
 
-    if randomize == True:
+    if randomize is True:
         print("shuffling links")
         random.shuffle(links)
     print("Got ", len(links), ", returning ",
