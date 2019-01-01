@@ -69,12 +69,10 @@ def create_database(address, logger, name):
                                    "accountsProgress"])
 
             connection.commit()
-
     except Exception as exc:
         logger.warning(
             "Wah! Error occurred while getting a DB for '{}':\n\t{}"
             .format(name, str(exc).encode("utf-8")))
-
     finally:
         if connection:
             # close the open connection

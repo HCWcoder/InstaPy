@@ -7,7 +7,7 @@ LIKE_TAG_CLASS = 'coreSpriteHeartOpen'
 
 
 def get_like_on_feed(browser, amount):
-    '''
+    """
         browser - the selenium browser element
         amount - total amount of likes to perform
 
@@ -15,7 +15,7 @@ def get_like_on_feed(browser, amount):
         The function takes in the total amount of likes to perform
         and then sends buttons to be liked, if it has run out of like
         buttons it will perform a scroll
-    '''
+    """
 
     # get like buttons
     likes_performed = 0
@@ -27,7 +27,6 @@ def get_like_on_feed(browser, amount):
         abort = False
         try:
             like_buttons = browser.find_elements_by_class_name(LIKE_TAG_CLASS)
-
         except NoSuchElementException:
             print('Unale to find the like buttons, Aborting')
             abort = True

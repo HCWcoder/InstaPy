@@ -186,7 +186,7 @@ def get_comments_on_post(browser,
 
     # check if commenting on the post is enabled
     commenting_state, msg = is_commenting_enabled(browser, logger)
-    if commenting_state is True:
+    if commenting_state is not True:
         logger.info(msg)
         return None
 
