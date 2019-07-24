@@ -58,6 +58,10 @@ default_profile_pic_instagram = [
     "/a8539c22ed9fec8e1c43b538b1ebfd1d/5C5A1A7A/t51.2885-19"
     "/11906329_960233084022564_1448528159_a.jpg"]
 
+def update_connection_status(connection_status):
+    # TODO: save it on user folder
+    with open("connection_status.json", "w") as write_file:
+        json.dump(connection_status, write_file)
 
 def is_private_profile(browser, logger, following=True):
     is_private = None
