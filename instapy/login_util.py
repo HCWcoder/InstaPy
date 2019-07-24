@@ -1,6 +1,7 @@
 """Module only used for the login part of the script"""
 # import built-in & third-party modules
 import pickle
+import json
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
@@ -12,6 +13,7 @@ from .util import explicit_wait
 from .util import click_element
 from .util import check_authorization
 from .util import reload_webpage
+from .util import update_connection_status
 
 # import exceptions
 from selenium.common.exceptions import NoSuchElementException
@@ -156,13 +158,22 @@ def login_user(browser,
     assert username, 'Username not provided'
     assert password, 'Password not provided'
 
+    # set initial state to offline
+    # TODO: keep working here
+    connection_status = {"connection_status": "offline"}
+    update_connection_status(connection_status)
+
     # check connection status
     try:
         logger.info('-- Connection Checklist [1/2] (Internet Connection Status)')
         browser.get("https://www.google.com")
         logger.info('- Internet Connection Status: ok')
+        connection_status = {"connection_status": "Internet connection is ok"}
+        update_connection_status(connection_status)
     except Exception:
         logger.warn('- Internet Connection Status: error')
+        connection_status = {"connection_status": "There is an issue with the internet connection"}
+        update_connection_status(connection_status)
         return False
 
     # check Instagram.com status
@@ -182,8 +193,12 @@ def login_user(browser,
         logger.info('- Instagram Response Time: {} '.format(response_time.text))
         logger.info('- Instagram Reponse Code: {}'.format(response_code.text))
         logger.info('- Instagram Server Status: ok')
+        connection_status = {"connection_status": "Instagram servers are running correctly"}
+        update_connection_status(connection_status)
     except Exception:
         logger.warn('- Instagram Server Status: error')
+        connection_status = {"connection_status": "Instagram server is down"}
+        update_connection_status(connection_status)
         return False
 
     ig_homepage = "https://www.instagram.com"
