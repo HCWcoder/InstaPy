@@ -58,10 +58,7 @@ default_profile_pic_instagram = [
     "/a8539c22ed9fec8e1c43b538b1ebfd1d/5C5A1A7A/t51.2885-19"
     "/11906329_960233084022564_1448528159_a.jpg"]
 
-def update_connection_status(connection_status):
-    # TODO: save it on user folder
-    with open("connection_status.json", "w") as write_file:
-        json.dump(connection_status, write_file)
+next_screenshot = 1
 
 def is_private_profile(browser, logger, following=True):
     is_private = None
@@ -393,60 +390,76 @@ def getUserData(query,
         return data
 
 
-def update_activity(action="server_calls"):
-    """ Record every Instagram server call (page load, content load, likes,
-        comments, follows, unfollow). """
+def update_activity(browser,
+                    action="server_calls",
+                    isServerCall=False,
+                    state=None):
+    """ TODO: update description ->
+        Record every Instagram server call (page load, content load, likes,
+        comments, follows, unfollow).
+    """
     # check action availability
     quota_supervisor("server_calls")
 
-    # get a DB and start a connection
-    db, id = get_database()
-    conn = sqlite3.connect(db)
+    # take screen shot
+    take_rotative_screenshot(browser)
 
-    with conn:
-        conn.row_factory = sqlite3.Row
-        cur = conn.cursor()
-        # collect today data
-        cur.execute("SELECT * FROM recordActivity WHERE profile_id=:var AND "
-                    "STRFTIME('%Y-%m-%d %H', created) == STRFTIME('%Y-%m-%d "
-                    "%H', 'now', 'localtime')",
-                    {"var": id})
-        data = cur.fetchone()
+    # update state to JSON file
+    if state:
+        data = {"state": state}
+        with open("username___state.json", "w") as write_file:
+            json.dump(data, write_file)
 
-        if data is None:
-            # create a new record for the new day
-            cur.execute("INSERT INTO recordActivity VALUES "
-                        "(?, 0, 0, 0, 0, 1, STRFTIME('%Y-%m-%d %H:%M:%S', "
-                        "'now', 'localtime'))",
-                        (id,))
+    # sum a server call
+    if isServerCall:
+        # get a DB and start a connection
+        db, id = get_database()
+        conn = sqlite3.connect(db)
 
-        else:
-            # sqlite3.Row' object does not support item assignment -> so,
-            # convert it into a new dict
-            data = dict(data)
+        with conn:
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            # collect today data
+            cur.execute("SELECT * FROM recordActivity WHERE profile_id=:var AND "
+                        "STRFTIME('%Y-%m-%d %H', created) == STRFTIME('%Y-%m-%d "
+                        "%H', 'now', 'localtime')",
+                        {"var": id})
+            data = cur.fetchone()
 
-            # update
-            data[action] += 1
-            quota_supervisor(action, update=True)
+            if data is None:
+                # create a new record for the new day
+                cur.execute("INSERT INTO recordActivity VALUES "
+                            "(?, 0, 0, 0, 0, 1, STRFTIME('%Y-%m-%d %H:%M:%S', "
+                            "'now', 'localtime'))",
+                            (id,))
 
-            if action != "server_calls":
-                # always update server calls
-                data["server_calls"] += 1
-                quota_supervisor("server_calls", update=True)
+            else:
+                # sqlite3.Row' object does not support item assignment -> so,
+                # convert it into a new dict
+                data = dict(data)
 
-            sql = ("UPDATE recordActivity set likes = ?, comments = ?, "
-                   "follows = ?, unfollows = ?, server_calls = ?, "
-                   "created = STRFTIME('%Y-%m-%d %H:%M:%S', 'now', "
-                   "'localtime') "
-                   "WHERE  profile_id=? AND STRFTIME('%Y-%m-%d %H', created) "
-                   "== "
-                   "STRFTIME('%Y-%m-%d %H', 'now', 'localtime')")
+                # update
+                data[action] += 1
+                quota_supervisor(action, update=True)
 
-            cur.execute(sql, (data['likes'], data['comments'], data['follows'],
-                              data['unfollows'], data['server_calls'], id))
+                if action != "server_calls":
+                    # always update server calls
+                    data["server_calls"] += 1
+                    quota_supervisor("server_calls", update=True)
 
-        # commit the latest changes
-        conn.commit()
+                sql = ("UPDATE recordActivity set likes = ?, comments = ?, "
+                    "follows = ?, unfollows = ?, server_calls = ?, "
+                    "created = STRFTIME('%Y-%m-%d %H:%M:%S', 'now', "
+                    "'localtime') "
+                    "WHERE  profile_id=? AND STRFTIME('%Y-%m-%d %H', created) "
+                    "== "
+                    "STRFTIME('%Y-%m-%d %H', 'now', 'localtime')")
+
+                cur.execute(sql, (data['likes'], data['comments'], data['follows'],
+                                data['unfollows'], data['server_calls'], id))
+
+            # commit the latest changes
+            conn.commit()
 
 
 def add_user_to_blacklist(username, campaign, action, logger, logfolder):
@@ -1046,7 +1059,9 @@ def web_address_navigator(browser, link):
             try:
                 browser.get(link)
                 # update server calls
-                update_activity()
+                update_activity(browser,
+                                isServerCall=True,
+                                state=None)
                 sleep(2)
                 break
 
@@ -1706,7 +1721,9 @@ def smart_run(session, threaded=False):
 def reload_webpage(browser):
     """ Reload the current webpage """
     browser.execute_script("location.reload()")
-    update_activity()
+    update_activity(browser,
+                    isServerCall=True,
+                    state=None)
     sleep(2)
 
     return True
@@ -2166,6 +2183,25 @@ def get_bounding_box(latitude_in_degrees, longitude_in_degrees, half_side_in_mil
     }
 
     return bbox
+
+def take_rotative_screenshot(browser):
+    """
+        Make a sequence of screenshots, based on hour:min:secs
+    """
+    global next_screenshot
+
+    if next_screenshot == 1:
+        browser.save_screenshot('1.png')
+    elif next_screenshot == 2:
+        browser.save_screenshot('2.png')        
+    else:
+        browser.save_screenshot('3.png')        
+        next_screenshot = 0
+        # sum +1 next
+
+    # update next
+    next_screenshot += 1
+    
 
 
 class CustomizedArgumentParser(ArgumentParser):

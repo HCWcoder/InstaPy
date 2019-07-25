@@ -13,7 +13,6 @@ from .util import explicit_wait
 from .util import click_element
 from .util import check_authorization
 from .util import reload_webpage
-from .util import update_connection_status
 
 # import exceptions
 from selenium.common.exceptions import NoSuchElementException
@@ -168,21 +167,20 @@ def login_user(browser,
     assert password, 'Password not provided'
 
     # set initial state to offline
-    # TODO: keep working here
-    connection_status = {"connection_status": "offline"}
-    update_connection_status(connection_status)
+    update_activity(browser, isServerCall=False, state='trying to connect')
 
     # check connection status
     try:
         logger.info('-- Connection Checklist [1/2] (Internet Connection Status)')
         browser.get("https://www.google.com")
         logger.info('- Internet Connection Status: ok')
-        connection_status = {"connection_status": "Internet connection is ok"}
-        update_connection_status(connection_status)
+        update_activity(browser, isServerCall=False, state=(
+            'Internet connection is ok'))
     except Exception:
         logger.warn('- Internet Connection Status: error')
-        connection_status = {"connection_status": "There is an issue with the internet connection"}
-        update_connection_status(connection_status)
+        update_activity(browser,
+                        isServerCall=False,
+                        state=('There is an issue with the internet connection'))
         return False
 
     # check Instagram.com status
@@ -202,12 +200,14 @@ def login_user(browser,
         logger.info('- Instagram Response Time: {} '.format(response_time.text))
         logger.info('- Instagram Reponse Code: {}'.format(response_code.text))
         logger.info('- Instagram Server Status: ok')
-        connection_status = {"connection_status": "Instagram servers are running correctly"}
-        update_connection_status(connection_status)
+        update_activity(browser,
+                        isServerCall=False,
+                        state=('Instagram servers are running correctly'))
     except Exception:
         logger.warn('- Instagram Server Status: error')
-        connection_status = {"connection_status": "Instagram server is down"}
-        update_connection_status(connection_status)
+        update_activity(browser,
+                        isServerCall=False,
+                        state=('Instagram server is down'))
         return False
 
     ig_homepage = "https://www.instagram.com"
@@ -266,7 +266,9 @@ def login_user(browser,
             login_elem.click()
 
         # update server calls
-        update_activity()
+        update_activity(browser,
+                        isServerCall=True,
+                        state=('Clicked Login Button'))
 
     # Enter username and password and logs the user in
     # Sometimes the element name isn't 'Username' and 'Password'
