@@ -39,7 +39,7 @@ def bypass_suspicious_login(browser, bypass_with_mobile):
          .perform())
 
         # update server calls
-        update_activity()
+        update_activity(browser, state=None)
 
     except NoSuchElementException:
         pass
@@ -55,7 +55,7 @@ def bypass_suspicious_login(browser, bypass_with_mobile):
          .perform())
 
         # update server calls
-        update_activity()
+        update_activity(browser, state=None)
 
     except NoSuchElementException:
         # no verification needed
@@ -107,7 +107,7 @@ def bypass_suspicious_login(browser, bypass_with_mobile):
      .perform())
 
     # update server calls
-    update_activity()
+    update_activity(browser, state=None)
 
     print('Instagram detected an unusual login attempt')
     print('A security code was sent to your {}'.format(choice))
@@ -125,7 +125,7 @@ def bypass_suspicious_login(browser, bypass_with_mobile):
 
     # update server calls for both 'click' and 'send_keys' actions
     for i in range(2):
-        update_activity()
+        update_activity(browser, state=None)
 
     submit_security_code_button = browser.find_element_by_xpath(
         read_xpath(bypass_suspicious_login.__name__, "submit_security_code_button")
@@ -137,7 +137,7 @@ def bypass_suspicious_login(browser, bypass_with_mobile):
      .perform())
 
     # update server calls
-    update_activity()
+    update_activity(browser, state=None)
 
     try:
         sleep(5)
@@ -167,19 +167,19 @@ def login_user(browser,
     assert password, 'Password not provided'
 
     # set initial state to offline
-    update_activity(browser, isServerCall=False, state='trying to connect')
+    update_activity(browser, action=None, state='trying to connect')
 
     # check connection status
     try:
         logger.info('-- Connection Checklist [1/2] (Internet Connection Status)')
         browser.get("https://www.google.com")
         logger.info('- Internet Connection Status: ok')
-        update_activity(browser, isServerCall=False, state=(
+        update_activity(browser, action=None, state=(
             'Internet connection is ok'))
     except Exception:
         logger.warn('- Internet Connection Status: error')
         update_activity(browser,
-                        isServerCall=False,
+                        action=None,
                         state=('There is an issue with the internet connection'))
         return False
 
@@ -201,12 +201,12 @@ def login_user(browser,
         logger.info('- Instagram Reponse Code: {}'.format(response_code.text))
         logger.info('- Instagram Server Status: ok')
         update_activity(browser,
-                        isServerCall=False,
+                        action=None,
                         state=('Instagram servers are running correctly'))
     except Exception:
         logger.warn('- Instagram Server Status: error')
         update_activity(browser,
-                        isServerCall=False,
+                        action=None,
                         state=('Instagram server is down'))
         return False
 
@@ -266,9 +266,7 @@ def login_user(browser,
             login_elem.click()
 
         # update server calls
-        update_activity(browser,
-                        isServerCall=True,
-                        state=None)
+        update_activity(browser, state=None)
 
     # Enter username and password and logs the user in
     # Sometimes the element name isn't 'Username' and 'Password'
@@ -292,9 +290,7 @@ def login_user(browser,
 
     # update server calls for both 'click' and 'send_keys' actions
     for _ in range(2):
-        update_activity(browser,
-                        isServerCall=True,
-                        state=None)
+        update_activity(browser, state=None)
 
     sleep(1)
 
@@ -320,8 +316,10 @@ def login_user(browser,
      .perform())
 
     # update server calls for both 'click' and 'send_keys' actions
+    # TODO: again? look above
     for i in range(4):
-        update_activity()
+        update_activity(browser, state=None)
+        
 
     dismiss_get_app_offer(browser, logger)
     dismiss_notification_offer(browser, logger)
