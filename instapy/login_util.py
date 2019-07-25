@@ -268,7 +268,7 @@ def login_user(browser,
         # update server calls
         update_activity(browser,
                         isServerCall=True,
-                        state=('Clicked Login Button'))
+                        state=None)
 
     # Enter username and password and logs the user in
     # Sometimes the element name isn't 'Username' and 'Password'
@@ -292,7 +292,9 @@ def login_user(browser,
 
     # update server calls for both 'click' and 'send_keys' actions
     for _ in range(2):
-        update_activity()
+        update_activity(browser,
+                        isServerCall=True,
+                        state=None)
 
     sleep(1)
 

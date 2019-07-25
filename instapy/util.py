@@ -2201,7 +2201,6 @@ def take_rotative_screenshot(browser):
 
     # update next
     next_screenshot += 1
-    
 
 
 class CustomizedArgumentParser(ArgumentParser):
