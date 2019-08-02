@@ -1258,7 +1258,7 @@ session.story_by_users(['user1', 'user2'])
 
 ### Send Dm's to users
 
-Take a list of users and watch their stories.
+Take a list of users and send them dm's.
 
 ```python
 session.send_dm('Hello, thanks for the follow back',['user1', 'user2'])
