@@ -79,6 +79,7 @@ from .text_analytics import yandex_supported_languages
 from .browser import set_selenium_local_session
 from .browser import close_browser
 from .mobile_util import create_ig_post
+from .mobile_util import sending_dm
 from .file_manager import get_workspace
 from .file_manager import get_logfolder
 
@@ -5544,4 +5545,18 @@ class InstaPy:
             self.logger.info('New post created !')
         else:
             self.logger.info('Something went wrong in post creation !')
+
+    def create_post(self, post_description, image_file_path):
+        # keep InstaPy class clean :)
+        if create_ig_post(self.browser, self.logger, post_description, image_file_path):
+            self.logger.info('New post created !')
+        else:
+            self.logger.info('Something went wrong in post creation !')
+
+    def send_dm(self, message, to_who):
+        # keep InstaPy class clean :)
+        if sending_dm(self.browser, self.logger, message, to_who):
+            self.logger.info('DM sent !')
+        else:
+            self.logger.info('Something went wrong in sending dm !')
 

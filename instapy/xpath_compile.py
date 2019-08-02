@@ -212,3 +212,15 @@ xpath['create_ig_post'] = {
     "post_description_textarea": "//textarea",
     "final_post_creation_step": "//button[text()='Share']"
 }
+
+xpath['sending_dm'] = {
+    "direct_msg": "//*[@id='react-root']/section/nav[1]/div/div/header/div/div[2]/a/span",
+    "plus_button": "//*[@id='react-root']/section/div[1]/header/div/div[2]/button/span",
+    "search_field": "//*[@id='react-root']/section/div[2]/div/div[1]/div/div[2]/input",
+    "click_user": "//*[@id='react-root']/section/div[2]/div/div[2]/div[1]/div/div[3]/button/span",
+    "next_button": "//*[@id='react-root']/section/div[1]/header/div/div[2]/div/button",
+    "message_field": "//*[@id='react-root']/section/div[2]/div[2]/div/div/div/textarea",
+    "send_button": "//*[@id='react-root']/section/div[2]/div[2]/div/div/div[2]/button",
+    "home_button": "//*[@id='react-root']/section/nav[2]/div/div/div[2]/div/div/div[1]/a",
+    "cancel_home_notification": "/html/body/div[2]/div/div/div[3]/button[2]"
+}

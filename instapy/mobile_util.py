@@ -43,3 +43,52 @@ def create_ig_post(browser, logger, post_description, image_file_path):
         return True
     except:
         return False
+
+
+def sending_dm(browser, logger, message, to_who):
+    import ipdb#;ipdb.set_trace()
+    try:
+        logger.info('Sending a DM to user(s)')
+        # click home
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "home_button")).click()
+        sleep(2)
+        # click cancel home screen
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "cancel_home_notification")).click()
+        sleep(1)
+        # Click on MD Button
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "direct_msg")).click()
+        sleep(3)
+        # click on notification off
+        dismiss_notification_offer(browser, logger)
+        sleep(1)
+        # click on plus button
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "plus_button")).click()
+        for users in to_who:
+            # Search for the desired user
+            browser.find_element_by_xpath(
+                read_xpath(sending_dm.__name__, "search_field")
+            ).send_keys(users)
+            sleep(2.5)
+            # click on the searched user
+            browser.find_element_by_xpath(
+                read_xpath(sending_dm.__name__, "click_user")).click()
+        # next button
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "next_button")).click()
+        sleep(1)
+        # type the message
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "message_field")
+        ).send_keys(message)
+        sleep(2)
+        # send button
+        browser.find_element_by_xpath(
+            read_xpath(sending_dm.__name__, "send_button")).click()
+
+        return True
+    except:
+        return False
